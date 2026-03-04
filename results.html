@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نتائج التوافق — هارت سينك</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/animations.css">
+</head>
+
+<body>
+    <div class="bg-orbs">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+    </div>
+
+    <nav class="navbar">
+        <div class="container">
+            <a href="dashboard.html" class="nav-brand">
+                <span class="heart-icon">💑</span> هارت سينك
+            </a>
+            <div class="nav-actions">
+                <img class="nav-avatar" src="" alt="" style="display:none">
+                <span class="nav-name"></span>
+                <button id="logout-btn" class="btn btn-outline btn-sm">خروج</button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container" style="padding:40px 24px 80px;position:relative;z-index:1;max-width:800px">
+
+        <div id="loading-state" class="loading-state" style="padding:80px">
+            <div class="spinner"></div>
+            <p>جاري حساب التوافق...</p>
+        </div>
+
+        <div id="not-ready" class="hidden card text-center" style="padding:56px">
+            <div style="font-size:3rem;margin-bottom:16px">⏳</div>
+            <h2 class="fw-black mb-8">النتائج ليست جاهزة بعد</h2>
+            <p class="text-muted mb-24">يبدو أن شريكك لم يكمل إجاباته بعد.</p>
+            <a id="go-wait-btn" href="#" class="btn btn-primary">انتظار النتائج</a>
+        </div>
+
+        <div id="results-content" class="hidden">
+
+            <!-- Confetti container -->
+            <div id="confetti-container" style="position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden">
+            </div>
+
+            <!-- Score Header -->
+            <div class="card text-center mb-24 animate-fadeInUp" style="position:relative;z-index:1">
+                <div class="flex items-center gap-12 mb-16" style="justify-content:center;flex-wrap:wrap">
+                    <div id="my-avatar-wrap" style="text-align:center">
+                        <img id="my-avatar" src="" alt=""
+                            style="width:56px;height:56px;border-radius:50%;border:2.5px solid var(--primary);object-fit:cover">
+                        <p class="text-xs text-muted mt-4" id="my-name">—</p>
+                    </div>
+                    <span style="font-size:1.5rem">💜</span>
+                    <div id="partner-avatar-wrap" style="text-align:center">
+                        <img id="partner-avatar" src="" alt=""
+                            style="width:56px;height:56px;border-radius:50%;border:2.5px solid var(--accent);object-fit:cover">
+                        <p class="text-xs text-muted mt-4" id="partner-name">—</p>
+                    </div>
+                </div>
+
+                <!-- Animated Circle -->
+                <div class="compat-circle-wrapper glow-border" style="margin-bottom:16px">
+                    <svg class="compat-circle-svg" viewBox="0 0 220 220">
+                        <defs>
+                            <linearGradient id="circleGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#a855f7" />
+                                <stop offset="100%" stop-color="#ec4899" />
+                            </linearGradient>
+                        </defs>
+                        <circle class="compat-track" cx="110" cy="110" r="100" />
+                        <circle class="compat-fill" cx="110" cy="110" r="100" />
+                    </svg>
+                    <div class="compat-label">
+                        <div class="compat-percent gradient-text" id="score-display">0٪</div>
+                        <div class="compat-caption">توافق</div>
+                    </div>
+                </div>
+
+                <div id="compat-message" class="fw-black" style="font-size:1.3rem;margin-bottom:8px"></div>
+                <div id="compat-emoji" style="font-size:2rem"></div>
+            </div>
+
+            <!-- Matched Answers -->
+            <div class="result-section mb-24" id="matched-section">
+                <div class="flex items-center gap-12 mb-16">
+                    <div style="font-size:1.5rem">💜</div>
+                    <h2 class="fw-black">الإجابات المتطابقة</h2>
+                    <span class="badge badge-completed" id="matched-count">0</span>
+                </div>
+                <div id="matched-list">
+                    <p class="text-muted text-sm text-center" style="padding:20px">لا توجد إجابات متطابقة</p>
+                </div>
+            </div>
+
+            <!-- Mismatched Answers -->
+            <div class="result-section mb-24" id="mismatched-section">
+                <div class="flex items-center gap-12 mb-16">
+                    <div style="font-size:1.5rem">💔</div>
+                    <h2 class="fw-black">الإجابات المختلفة</h2>
+                    <span class="badge badge-waiting" id="mismatched-count">0</span>
+                </div>
+                <div id="mismatched-list">
+                    <p class="text-muted text-sm text-center" style="padding:20px">لا توجد إجابات مختلفة</p>
+                </div>
+            </div>
+
+            <!-- Secret Messages -->
+            <div class="result-section mb-24" id="secret-section">
+                <div class="flex items-center gap-12 mb-16">
+                    <div style="font-size:1.5rem">💌</div>
+                    <h2 class="fw-black">الرسائل السرية</h2>
+                </div>
+                <div class="grid-2">
+                    <div class="secret-box">
+                        <p class="fw-bold text-sm mb-8" id="my-secret-label">رسالتك</p>
+                        <p id="my-secret-text" class="text-muted text-sm"></p>
+                    </div>
+                    <div class="secret-box">
+                        <p class="fw-bold text-sm mb-8" id="partner-secret-label">رسالة شريكك</p>
+                        <p id="partner-secret-text" class="text-muted text-sm"></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="text-center result-section">
+                <button id="share-btn" class="btn btn-primary btn-lg mb-16">
+                    🔗 مشاركة النتيجة
+                </button>
+                <br>
+                <a href="dashboard.html" class="btn btn-outline">العودة إلى لوحة التحكم</a>
+            </div>
+
+        </div>
+    </main>
+
+    <script type="module">
+        import { requireAuth, renderNavUser, signOut, showToast } from './js/auth.js';
+        import { renderResults, animateCircle, renderAnswerPair, compatibilityMessage } from './js/results.js';
+
+        async function init() {
+            const user = await requireAuth();
+            if (!user) return;
+            renderNavUser(user);
+
+            const params = new URLSearchParams(location.search);
+            const roomId = params.get('room');
+            if (!roomId) { location.href = 'dashboard.html'; return; }
+
+            try {
+                const { room, myInfo, partnerInfo, matched, mismatched, score } = await renderResults(roomId, user.id);
+
+                document.getElementById('loading-state').classList.add('hidden');
+                document.getElementById('results-content').classList.remove('hidden');
+
+                // Avatars
+                document.getElementById('my-name').textContent = myInfo?.name || 'أنت';
+                document.getElementById('partner-name').textContent = partnerInfo?.name || 'شريكك';
+                if (myInfo?.avatar_url) document.getElementById('my-avatar').src = myInfo.avatar_url;
+                if (partnerInfo?.avatar_url) document.getElementById('partner-avatar').src = partnerInfo.avatar_url;
+
+                // Score
+                const msg = compatibilityMessage(score);
+                document.getElementById('compat-message').textContent = msg.text;
+                document.getElementById('compat-emoji').textContent = msg.emoji;
+
+                // Animate score circle (after a brief delay)
+                setTimeout(() => animateCircle(Number(score)), 600);
+
+                // Matched answers
+                const matchedList = document.getElementById('matched-list');
+                document.getElementById('matched-count').textContent = matched.length;
+                if (matched.length) {
+                    matchedList.innerHTML = '';
+                    matched.forEach(entry => {
+                        const el = renderAnswerPair(entry, myInfo?.name, partnerInfo?.name, 'match-section');
+                        matchedList.appendChild(el);
+                    });
+                }
+
+                // Mismatched answers
+                const mismatchedList = document.getElementById('mismatched-list');
+                document.getElementById('mismatched-count').textContent = mismatched.length;
+                if (mismatched.length) {
+                    mismatchedList.innerHTML = '';
+                    mismatched.forEach(entry => {
+                        const el = renderAnswerPair(entry, myInfo?.name, partnerInfo?.name, 'mismatch-section');
+                        mismatchedList.appendChild(el);
+                    });
+                }
+
+                // Secret messages
+                const isCreator = room.created_by === user.id;
+                const myMsg = isCreator ? room.creator_message : room.partner_message;
+                const partnerMsg = isCreator ? room.partner_message : room.creator_message;
+
+                document.getElementById('my-secret-text').textContent = myMsg || 'لم تكتب رسالة سرية';
+                document.getElementById('partner-secret-text').textContent = partnerMsg || 'لم يكتب شريكك رسالة سرية';
+                document.getElementById('my-secret-label').textContent = `رسالة ${myInfo?.name || 'أنت'}`;
+                document.getElementById('partner-secret-label').textContent = `رسالة ${partnerInfo?.name || 'شريكك'}`;
+
+                // Reveal sections with stagger
+                const sections = document.querySelectorAll('.result-section');
+                sections.forEach((el, i) => {
+                    setTimeout(() => el.classList.add('visible'), 800 + i * 300);
+                });
+
+                // Confetti
+                if (score >= 60) launchConfetti();
+
+            } catch (err) {
+                document.getElementById('loading-state').classList.add('hidden');
+                if (err.message.includes('لم تكتمل')) {
+                    const roomId = new URLSearchParams(location.search).get('room');
+                    document.getElementById('not-ready').classList.remove('hidden');
+                    document.getElementById('go-wait-btn').href = `waiting.html?room=${roomId}`;
+                } else {
+                    showToast(`خطأ: ${err.message}`, 'error');
+                }
+            }
+        }
+
+        // Share
+        document.getElementById('share-btn')?.addEventListener('click', () => {
+            const score = document.getElementById('score-display')?.textContent;
+            const text = `💑 اكتشفنا توافقنا عبر هارت سينك وكان ${score}! جرّبوه أنتم أيضاً 💜`;
+            if (navigator.share) {
+                navigator.share({ title: 'هارت سينك', text });
+            } else {
+                navigator.clipboard.writeText(text).then(() => showToast('تم نسخ النتيجة!', 'success'));
+            }
+        });
+        document.getElementById('logout-btn')?.addEventListener('click', () => import('./js/auth.js').then(m => m.signOut()));
+
+        // Confetti
+        function launchConfetti() {
+            const c = document.getElementById('confetti-container');
+            const emojis = ['💜', '💗', '✨', '🌸', '💘', '⭐', '🎉'];
+            for (let i = 0; i < 30; i++) {
+                setTimeout(() => {
+                    const el = document.createElement('div');
+                    el.style.cssText = `
+            position:absolute;
+            left:${Math.random() * 100}%;
+            top:-20px;
+            font-size:${1 + Math.random() * 1.5}rem;
+            animation: confetti-fall ${3 + Math.random() * 4}s linear forwards;
+          `;
+                    el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+                    c.appendChild(el);
+                    setTimeout(() => el.remove(), 8000);
+                }, i * 120);
+            }
+        }
+
+        init();
+    </script>
+</body>
+
+</html>

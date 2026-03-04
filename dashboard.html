@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة التحكم — هارت سينك</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/animations.css">
+</head>
+
+<body>
+    <div class="bg-orbs">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+    </div>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="dashboard.html" class="nav-brand">
+                <span class="heart-icon">💑</span> هارت سينك
+            </a>
+            <div class="nav-actions">
+                <img class="nav-avatar" src="" alt="صورة المستخدم" style="display:none">
+                <span class="nav-name"></span>
+                <button id="logout-btn" class="btn btn-outline btn-sm">خروج</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container" style="padding-top:40px;padding-bottom:60px;position:relative;z-index:1">
+
+        <!-- Loading -->
+        <div id="loading-state" class="loading-state">
+            <div class="spinner"></div>
+            <p>جاري التحميل...</p>
+        </div>
+
+        <!-- Dashboard Content (hidden until loaded) -->
+        <div id="dashboard-content" class="hidden">
+
+            <!-- Welcome Banner -->
+            <div class="card mb-32"
+                style="background:linear-gradient(135deg,rgba(124,58,237,0.15),rgba(190,24,93,0.15));border-color:rgba(168,85,247,0.3)">
+                <div class="flex items-center gap-16" style="flex-wrap:wrap">
+                    <div style="font-size:3rem" class="animate-float">💜</div>
+                    <div>
+                        <h1 class="fw-black" style="font-size:1.5rem">أهلاً، <span id="user-name">—</span>!</h1>
+                        <p class="text-muted mt-8">ابدأ رحلة التوافق مع شريكك أو انضم إلى غرفة موجودة</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Cards Row -->
+            <div class="grid-2 mb-32">
+                <!-- Create Room -->
+                <div class="card">
+                    <div style="font-size:2.5rem;margin-bottom:12px">🏠</div>
+                    <h2 class="fw-black mb-8" style="font-size:1.2rem">إنشاء غرفة جديدة</h2>
+                    <p class="text-muted text-sm mb-20">أنشئ غرفة خاصة وادعُ شريكك عبر رابط الدعوة</p>
+                    <button id="create-room-btn" class="btn btn-primary btn-block">
+                        ✨ إنشاء غرفة
+                    </button>
+
+                    <!-- Invite Box (hidden until room created) -->
+                    <div id="invite-section" class="hidden mt-24">
+                        <div class="divider-text"><span>رابط الدعوة</span></div>
+                        <div class="invite-box">
+                            <span class="invite-link" id="invite-link"></span>
+                            <button id="copy-link-btn" class="btn btn-sm btn-outline" style="flex-shrink:0">نسخ</button>
+                        </div>
+                        <p class="text-xs text-muted text-center mt-8">شاركه مع شريكك وابدأا المغامرة معاً 💌</p>
+                        <a id="go-room-btn" href="#" class="btn btn-primary btn-block mt-16">
+                            الذهاب إلى الغرفة →
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Join Room -->
+                <div class="card">
+                    <div style="font-size:2.5rem;margin-bottom:12px">🔗</div>
+                    <h2 class="fw-black mb-8" style="font-size:1.2rem">الانضمام برابط الدعوة</h2>
+                    <p class="text-muted text-sm mb-20">لديك رابط دعوة من شريكك؟ الصقه هنا</p>
+                    <div class="form-group">
+                        <input type="text" id="invite-input" class="form-control"
+                            placeholder="https://... أو معرّف الغرفة" style="direction:ltr;text-align:right">
+                    </div>
+                    <button id="join-room-btn" class="btn btn-outline btn-block">
+                        💗 انضم إلى الغرفة
+                    </button>
+                </div>
+            </div>
+
+            <!-- My Rooms List -->
+            <div class="card">
+                <div class="flex justify-between items-center mb-24">
+                    <h2 class="fw-black" style="font-size:1.1rem">💼 غرفي</h2>
+                    <button id="refresh-rooms-btn" class="btn btn-sm btn-outline">تحديث</button>
+                </div>
+                <div id="rooms-list">
+                    <div class="loading-state">
+                        <div class="spinner"></div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script type="module">
+        import { requireAuth, renderNavUser, signOut, showToast } from './js/auth.js';
+        import { createRoom, getUserRooms, joinRoom, getInviteLink, statusLabel, statusBadgeClass } from './js/rooms.js';
+
+        let currentUser = null;
+
+        // ── Init ──────────────────────────────────────────────────
+        async function init() {
+            currentUser = await requireAuth();
+            if (!currentUser) return;
+
+            renderNavUser(currentUser);
+            document.getElementById('user-name').textContent = currentUser.name || 'صديقي';
+            document.getElementById('loading-state').classList.add('hidden');
+            document.getElementById('dashboard-content').classList.remove('hidden');
+
+            await loadRooms();
+        }
+
+        // ── Load Rooms ────────────────────────────────────────────
+        async function loadRooms() {
+            const list = document.getElementById('rooms-list');
+            list.innerHTML = '<div class="loading-state"><div class="spinner"></div></div>';
+            try {
+                const rooms = await getUserRooms(currentUser.id);
+                if (!rooms.length) {
+                    list.innerHTML = `<div class="text-center text-muted" style="padding:40px">
+            <div style="font-size:3rem;margin-bottom:12px">🫶</div>
+            <p>لا توجد غرف بعد. أنشئ غرفتك الأولى!</p>
+          </div>`;
+                    return;
+                }
+                list.innerHTML = '';
+                rooms.forEach(room => {
+                    const card = document.createElement('div');
+                    card.className = 'room-card';
+                    const isCreator = room.created_by === currentUser.id;
+                    let action = '';
+                    if (room.status === 'completed') {
+                        action = `<a href="results.html?room=${room.id}" class="btn btn-sm btn-primary">النتائج 🎉</a>`;
+                    } else if (room.status === 'waiting' && isCreator) {
+                        action = `<a href="room.html?id=${room.id}" class="btn btn-sm btn-outline">دخول الغرفة</a>`;
+                    } else if (room.status === 'active') {
+                        action = `<a href="room.html?id=${room.id}" class="btn btn-sm btn-primary">إجابة الأسئلة</a>`;
+                    }
+                    card.innerHTML = `
+            <div class="room-info">
+              <div class="flex items-center gap-8 mb-4">
+                <span class="${statusBadgeClass(room.status)}">${statusLabel(room.status)}</span>
+                <span class="room-id">${room.id.substring(0, 8)}...</span>
+              </div>
+              <div class="room-date">${new Date(room.created_at).toLocaleDateString('ar-SA')}</div>
+              ${room.compatibility_score != null ? `<div class="fw-bold mt-4" style="color:var(--primary-light)">التوافق: ${room.compatibility_score}٪</div>` : ''}
+            </div>
+            ${action}
+          `;
+                    list.appendChild(card);
+                });
+            } catch (err) {
+                list.innerHTML = `<p class="text-muted text-center">خطأ في التحميل: ${err.message}</p>`;
+            }
+        }
+
+        // ── Create Room ───────────────────────────────────────────
+        document.getElementById('create-room-btn').addEventListener('click', async () => {
+            const btn = document.getElementById('create-room-btn');
+            btn.disabled = true;
+            btn.textContent = 'جاري الإنشاء...';
+            try {
+                const room = await createRoom(currentUser.id);
+                const link = getInviteLink(room.id);
+                document.getElementById('invite-link').textContent = link;
+                document.getElementById('invite-section').classList.remove('hidden');
+                document.getElementById('go-room-btn').href = `room.html?id=${room.id}`;
+                btn.textContent = '✅ تم الإنشاء!';
+                showToast('تم إنشاء الغرفة بنجاح! 🎉', 'success');
+                await loadRooms();
+            } catch (err) {
+                showToast('حدث خطأ: ' + err.message, 'error');
+                btn.disabled = false;
+                btn.textContent = '✨ إنشاء غرفة';
+            }
+        });
+
+        // ── Copy Invite Link ──────────────────────────────────────
+        document.getElementById('copy-link-btn').addEventListener('click', () => {
+            const link = document.getElementById('invite-link').textContent;
+            navigator.clipboard.writeText(link).then(() => showToast('تم نسخ الرابط! 📋', 'success'));
+        });
+
+        // ── Join Room ─────────────────────────────────────────────
+        document.getElementById('join-room-btn').addEventListener('click', async () => {
+            const input = document.getElementById('invite-input').value.trim();
+            if (!input) { showToast('أدخل رابط الدعوة أو معرّف الغرفة', 'error'); return; }
+
+            // Extract room ID from URL or use as-is
+            let roomId = input;
+            try {
+                const url = new URL(input);
+                roomId = url.searchParams.get('join') || url.searchParams.get('id') || input;
+            } catch { }
+
+            const btn = document.getElementById('join-room-btn');
+            btn.disabled = true;
+            btn.textContent = 'جاري الانضمام...';
+            try {
+                const room = await joinRoom(roomId, currentUser.id);
+                if (room) {
+                    showToast('تم الانضمام بنجاح! 💜', 'success');
+                    location.href = `room.html?id=${roomId}`;
+                }
+            } catch (err) {
+                showToast(err.message, 'error');
+                btn.disabled = false;
+                btn.textContent = '💗 انضم إلى الغرفة';
+            }
+        });
+
+        // Handle invite link in URL (e.g. ?join=...)
+        const urlParams = new URLSearchParams(location.search);
+        const joinId = urlParams.get('join');
+        if (joinId) document.getElementById('invite-input').value = joinId;
+
+        document.getElementById('refresh-rooms-btn').addEventListener('click', loadRooms);
+        document.getElementById('logout-btn').addEventListener('click', signOut);
+
+        init();
+    </script>
+</body>
+
+</html>
