@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>مساحتنا الخاصة 💘</title>
+  <!-- Fonts & Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(145deg, #1a0b0e 0%, #2d1a1f 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 16px;
+    }
+
+    /* الحاوية الرئيسية */
+    .app-wrapper {
+      max-width: 700px;
+      width: 100%;
+      background: rgba(255, 240, 245, 0.07);
+      backdrop-filter: blur(8px);
+      border-radius: 48px 48px 32px 32px;
+      box-shadow: 0 25px 50px -10px rgba(0, 0, 0, 0.6), 0 0 0 2px #ffb7c5 inset;
+      padding: 28px 24px;
+      border: 1px solid #ff99aa;
+    }
+
+    /* كلاسيك وردي غامق */
+    h1, h2, h3 {
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+
+    h1 {
+      font-size: 2.3rem;
+      background: linear-gradient(135deg, #ffd0d6, #ffb3c6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 8px;
+      text-shadow: 0 0 10px #ff80a0;
+    }
+
+    h2 {
+      color: #ffe2e9;
+      font-size: 1.6rem;
+      border-right: 5px solid #ff99bb;
+      padding-right: 16px;
+      margin: 20px 0 16px;
+    }
+
+    p, label, .text-light {
+      color: #fbdde4;
+    }
+
+    button, .btn-like {
+      background: #b34167;
+      border: none;
+      color: white;
+      font-weight: bold;
+      padding: 14px 28px;
+      border-radius: 60px;
+      font-size: 1.1rem;
+      cursor: pointer;
+      box-shadow: 0 10px 18px -6px #57002b;
+      transition: 0.2s;
+      border: 1px solid #ffb0c3;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    button:hover {
+      background: #cf5277;
+      transform: scale(1.02);
+      box-shadow: 0 12px 22px -4px #a1224f;
+    }
+
+    button.secondary {
+      background: transparent;
+      border: 2px solid #ff98b5;
+      color: #ffb7cc;
+      box-shadow: none;
+    }
+
+    button.secondary:hover {
+      background: #ffb7cc22;
+      color: white;
+    }
+
+    /* بطاقات وأسئلة */
+    .card-panel {
+      background: rgba(40, 15, 22, 0.7);
+      border-radius: 40px;
+      padding: 24px;
+      margin: 20px 0;
+      border: 1px solid #ff9eb2;
+      box-shadow: 0 15px 30px -15px black;
+    }
+
+    .input-field {
+      margin: 20px 0;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 16px 22px;
+      background: #1f0c12;
+      border: 2px solid #ff90aa;
+      border-radius: 60px;
+      font-size: 1rem;
+      color: #fff0f3;
+      outline: none;
+      transition: 0.2s;
+    }
+
+    input:focus, textarea:focus {
+      border-color: #ffccdd;
+      box-shadow: 0 0 20px #ff99bb;
+    }
+
+    textarea {
+      border-radius: 30px;
+      resize: vertical;
+    }
+
+    ::placeholder {
+      color: #b07c8b;
+      font-weight: 300;
+    }
+
+    .link-box {
+      background: #231016;
+      padding: 16px 20px;
+      border-radius: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border: 2px dashed #ff99aa;
+      direction: ltr;
+      word-break: break-all;
+    }
+
+    .link-text {
+      color: #ffb8cf;
+      font-size: 1.1rem;
+      font-weight: 500;
+    }
+
+    .copy-btn {
+      background: #883f5b;
+      padding: 10px 18px;
+      border-radius: 40px;
+      font-size: 0.9rem;
+      border: 1px solid #ffb0cb;
+    }
+
+    .badge {
+      background: #a02b51;
+      padding: 4px 16px;
+      border-radius: 50px;
+      color: white;
+      font-size: 0.9rem;
+      display: inline-block;
+    }
+
+    .question-item {
+      background: #2b141c;
+      padding: 22px;
+      border-radius: 32px;
+      margin: 24px 0;
+      border-right: 8px solid #ff88aa;
+    }
+
+    .question-text {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: #ffeef2;
+      margin-bottom: 16px;
+    }
+
+    .waiting-screen {
+      text-align: center;
+      padding: 25px;
+      background: #25131a;
+      border-radius: 48px;
+    }
+
+    .lock-icon {
+      font-size: 4rem;
+      color: #ffb0c3;
+      filter: drop-shadow(0 0 8px #ff4d7a);
+    }
+
+    .percentage {
+      font-size: 4rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #fbaac3, #ffd2dc);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: inline-block;
+    }
+
+    .match-item {
+      background: #2f1b23;
+      padding: 12px 20px;
+      border-radius: 50px;
+      margin: 10px 0;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      border: 1px solid #ffa7bc;
+    }
+
+    .match-icon {
+      font-size: 1.8rem;
+    }
+
+    hr {
+      border: 1px solid #ff99aa55;
+      margin: 24px 0;
+    }
+
+    .flex-row {
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .counter {
+      font-size: 1.5rem;
+      background: #1d0b12;
+      padding: 10px 24px;
+      border-radius: 40px;
+      border: 2px solid #ff99bb;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .disabled-click {
+      pointer-events: none;
+      opacity: 0.5;
+    }
+
+    .footer-text {
+      font-size: 0.9rem;
+      color: #c48a9b;
+      text-align: center;
+      margin-top: 30px;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-wrapper" id="appWrapper">
+    <!-- رأس الموقع -->
+    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
+      <i class="fas fa-heart" style="font-size: 3rem; color: #ffb0c3;"></i>
+      <h1>مساحتنا الخاصة 💞</h1>
+    </div>
+
+    <!-- محتوى متغير حسب الخطوات -->
+    <div id="dynamicContent">
+      <!-- سيتم حقن المحتوى عبر JS -->
+    </div>
+
+    <div class="footer-text">
+      <i class="fas fa-lock" style="margin-left: 6px;"></i> قلوب تنتظر حتى تكتمل
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      // ---------- بنية البيانات ----------
+      let appState = {
+        stage: 'welcome',         // welcome, register, linkReady, waiting, questions, results
+        user1: { name: '', password: '', answers: [] },
+        user2: { name: '', answers: [] },
+        roomId: null,
+        link: '',
+        bothCompleted: false,
+        questions: [
+          "متى شعرت أنك وقعت في الحب؟",
+          "ما أكثر شيء تحبه في الطرف الآخر؟",
+          "ما حلمك معنا بعد 5 سنوات؟",
+          "أكثر موقف أثر فيك؟",
+          "ما أكثر شيء يخيفك في العلاقة؟"
+        ]
+      };
+
+      // توليد رابط عشوائي (محاكاة)
+      function generateRoomId() {
+        return 'room_' + Math.random().toString(36).substring(2, 10) + '_' + Date.now().toString(36);
+      }
+
+      // النسبة المئوية للتوافق بناءً على الإجابات (مقارنة بسيطة: عدد الكلمات المشتركة البسيطة، للمتعة فقط)
+      function calculateMatchPercentage(answers1, answers2) {
+        if (!answers1.length || !answers2.length) return 0;
+        let totalQuestions = answers1.length;
+        let matched = 0;
+        for (let i = 0; i < totalQuestions; i++) {
+          let a1 = (answers1[i] || '').trim().toLowerCase();
+          let a2 = (answers2[i] || '').trim().toLowerCase();
+          if (a1.length > 3 && a2.length > 3) {
+            // تقاطع كلمات بسيط
+            let words1 = new Set(a1.split(/\s+/));
+            let words2 = new Set(a2.split(/\s+/));
+            let intersection = new Set([...words1].filter(w => words2.has(w) && w.length > 2));
+            if (intersection.size > 0) matched += 0.5; // نصف نقطة لكل سؤال فيه تشابه
+            // إذا تشابه طويل
+            if (a1.includes(a2) || a2.includes(a1)) matched += 0.5;
+          }
+        }
+        let raw = (matched / totalQuestions) * 100;
+        return Math.min(100, Math.round(raw * 1.2)); // تضخيم بسيط للعاطفة
+      }
+
+      // التأكد من أن كلا المستخدمين أجاب على جميع الأسئلة
+      function checkBothCompleted() {
+        if (appState.user1.answers.length === appState.questions.length &&
+            appState.user2.answers.length === appState.questions.length) {
+          appState.bothCompleted = true;
+        } else {
+          appState.bothCompleted = false;
+        }
+        return appState.bothCompleted;
+      }
+
+      // نسخ الرابط
+      function copyLinkToClipboard(text) {
+        navigator.clipboard.writeText(text).then(() => {
+          alert('✅ تم نسخ الرابط! أرسله لحبيبك.');
+        }).catch(() => {
+          prompt('انسخ الرابط يدويًا:', text);
+        });
+      }
+
+      // ---------- محرك العرض ----------
+      const contentDiv = document.getElementById('dynamicContent');
+
+      function render() {
+        if (!contentDiv) return;
+        const stage = appState.stage;
+
+        // welcome
+        if (stage === 'welcome') {
+          contentDiv.innerHTML = `
+            <div class="card-panel" style="text-align: center;">
+              <i class="fas fa-heart" style="font-size: 5rem; color: #ffa5bc; margin-bottom: 16px;"></i>
+              <h2>✨ رحلتنا تبدأ بسؤال ✨</h2>
+              <p style="font-size: 1.2rem; margin: 20px 0;">كل طرف يجيب بصدق، والإجابات تظهر بعد اكتمال الطرفين.</p>
+              <button id="startBtn"><i class="fas fa-feather-alt"></i> أنشئ مساحتنا</button>
+              <div style="margin-top: 25px; background: #25111a; border-radius: 40px; padding: 16px;">
+                <p><i class="fas fa-quote-right"></i> أكثر موقف أثر فيك؟ ما حلمنا بعد 5 سنوات؟</p>
+                <p style="color: #c57a94;">انتظر حتى يكمل شريكك .. القفل يُفتح معاً</p>
+              </div>
+            </div>
+          `;
+          document.getElementById('startBtn')?.addEventListener('click', () => {
+            appState.stage = 'register';
+            render();
+          });
+        }
+        // تسجيل الشخص الأول
+        else if (stage === 'register') {
+          contentDiv.innerHTML = `
+            <div class="card-panel">
+              <h2><i class="fas fa-pen-fancy"></i> سجل لتبدأ</h2>
+              <div class="input-field">
+                <label>الاسم الأول (ليظهر لحبيبك)</label>
+                <input type="text" id="name1" placeholder="مثال: عمر" value="">
+              </div>
+              <div class="input-field">
+                <label>كلمة مرور (للرجوع لاحقاً)</label>
+                <input type="password" id="pass1" placeholder="●●●●●●" value="123">
+              </div>
+              <div class="flex-row">
+                <button id="createRoomBtn"><i class="fas fa-link"></i> أنشئ الرابط الخاص</button>
+                <button class="secondary" id="backToWelcome"><i class="fas fa-arrow-right"></i> رجوع</button>
+              </div>
+            </div>
+          `;
+          document.getElementById('createRoomBtn')?.addEventListener('click', () => {
+            let name1 = document.getElementById('name1')?.value.trim();
+            if (!name1) { alert('الرجاء إدخال اسمك'); return; }
+            appState.user1.name = name1;
+            appState.user1.password = document.getElementById('pass1')?.value || '';
+            appState.roomId = generateRoomId();
+            // بناء الرابط (هنا نستخدم رابط الموقع الحالي مع roomId)
+            let base = window.location.href.split('#')[0].split('?')[0];
+            appState.link = base + '?room=' + appState.roomId;
+            appState.stage = 'linkReady';
+            render();
+          });
+          document.getElementById('backToWelcome')?.addEventListener('click', () => {
+            appState.stage = 'welcome';
+            render();
+          });
+        }
+        // عرض الرابط الخاص للشخص الأول
+        else if (stage === 'linkReady') {
+          contentDiv.innerHTML = `
+            <div class="card-panel">
+              <i class="fas fa-heart-circle-check" style="font-size: 3rem; color: #ffb0c3; display: block; text-align: center;"></i>
+              <h2 style="text-align: center;">🎁 رابطكما الخاص</h2>
+              <p style="text-align: center;">أرسله لحبيبك ليدخل ويجيب على الأسئلة</p>
+              <div class="link-box">
+                <span class="link-text" id="linkToCopy">${appState.link}</span>
+                <button class="copy-btn" id="copyLinkBtn"><i class="fas fa-copy"></i> نسخ</button>
+              </div>
+              <div style="margin-top: 30px; display: flex; gap: 10px; justify-content: center;">
+                <button id="goToWaitingAsUser1"><i class="fas fa-hourglass-half"></i> انتظر حتى يدخل الطرف الآخر</button>
+              </div>
+              <p class="badge" style="margin-top: 20px;">رابط صالح لحبيب واحد فقط</p>
+            </div>
+          `;
+          document.getElementById('copyLinkBtn')?.addEventListener('click', () => copyLinkToClipboard(appState.link));
+          document.getElementById('goToWaitingAsUser1')?.addEventListener('click', () => {
+            // ننتقل إلى شاشة الانتظار ولكن نتأكد أننا user1
+            appState.stage = 'waiting';
+            render();
+          });
+        }
+        // شاشة الانتظار (تظهر للشخص الأول أو للثاني إذا كان الأول لم يُجب بعد)
+        else if (stage === 'waiting') {
+          // نحتاج أن نعرف من الذي ينتظر: user1 أم user2؟
+          // سنعرض حالة الطرفين
+          let user1Completed = appState.user1.answers.length === appState.questions.length;
+          let user2Completed = appState.user2.answers.length === appState.questions.length;
+
+          if (checkBothCompleted()) {
+            appState.stage = 'results';
+            render();
+            return;
+          }
+
+          let message = '';
+          let subMessage = '';
+          if (!user1Completed && !user2Completed) {
+            message = 'لم يجب أي منكما بعد';
+            subMessage = 'سيبدأ الشخص الأول الإجابة أولاً';
+          } else if (user1Completed && !user2Completed) {
+            message = `✨ ${appState.user1.name || 'الطرف الأول'} أجاب. ننتظر الحبيب الآخر 💌`;
+          } else if (!user1Completed && user2Completed) {
+            message = `✨ ${appState.user2.name || 'الطرف الثاني'} أجاب. ننتظر الطرف الأول`;
+          }
+
+          contentDiv.innerHTML = `
+            <div class="waiting-screen">
+              <i class="fas fa-lock lock-icon"></i>
+              <h2 style="color: #ffc1d0;">في انتظار اكتمال الطرفين</h2>
+              <div class="card-panel" style="background: #2c1721;">
+                <p><i class="fas fa-user-check"></i> ${appState.user1.name || 'الشخص الأول'}: ${user1Completed ? '✅ أجاب' : '⏳ لم يجب'}</p>
+                <p><i class="fas fa-user-check"></i> ${appState.user2.name || 'الشخص الثاني'}: ${user2Completed ? '✅ أجاب' : '⏳ لم يجب'}</p>
+                <p style="margin-top: 16px;">${message}</p>
+                <p>${subMessage}</p>
+                <div style="margin-top: 20px;">
+                  <i class="fas fa-heart" style="color: #ff90aa;"></i> عندما يكمل كل منكما سيفتح القفل تلقائياً
+                </div>
+              </div>
+              <button class="secondary" id="checkAgainBtn"><i class="fas fa-sync-alt"></i> تحقق من الوضع</button>
+            </div>
+          `;
+          document.getElementById('checkAgainBtn')?.addEventListener('click', () => {
+            render(); // إعادة رسم للتأكد
+          });
+        }
+        // الأسئلة (تظهر للشخص الذي لم يجب بعد)
+        else if (stage === 'questions') {
+          // نحتاج أن نعرف أي مستخدم يجيب الآن (user1 أم user2)
+          // نفترض أننا نحتفظ بمتغير مؤقت currentUser في أثناء الجلسة
+          // سوف نستخدم sessionUserType: 'user1' أو 'user2'
+          if (!sessionStorage.getItem('currentUserType')) {
+            // إذا لم يُحدد، نسأل (لأن المباشر عبر الرابط هو user2)
+            // لكن سننشئ منطقاً: إذا كان الرابط يحوي room ونحن لم نسجل بعد كـ user2، نطلب الاسم.
+            // هنا نبسط: نعرض نموذج تسجيل دخول للشخص الثاني إذا لم يكن اسمه موجوداً
+            if (!appState.user2.name) {
+              contentDiv.innerHTML = `
+                <div class="card-panel">
+                  <h2>✨ أنت الحبيب المدعو ✨</h2>
+                  <p>الرابط خاص بك أنت و${appState.user1.name || 'حبيبك'}</p>
+                  <div class="input-field">
+                    <label>اكتب اسمك</label>
+                    <input type="text" id="name2Input" placeholder="مثال: ليلى">
+                  </div>
+                  <button id="setUser2NameBtn"><i class="fas fa-heart"></i> ابدأ الإجابة</button>
+                </div>
+              `;
+              document.getElementById('setUser2NameBtn')?.addEventListener('click', () => {
+                let name2 = document.getElementById('name2Input')?.value.trim();
+                if (!name2) { alert('الرجاء إدخال اسمك'); return; }
+                appState.user2.name = name2;
+                // نتأكد أن أسئلة user2 مصفوفة فارغة
+                appState.user2.answers = new Array(appState.questions.length).fill('');
+                sessionStorage.setItem('currentUserType', 'user2');
+                render(); // إعادة رسم نفس المرحلة فتعرض الأسئلة
+              });
+              return;
+            }
+          }
+
+          // الآن نعرض الأسئلة لمن يستخدم الجلسة
+          let currentUserType = sessionStorage.getItem('currentUserType') || 'user1'; // default user1 لو دخل من التسجيل
+          let user = currentUserType === 'user1' ? appState.user1 : appState.user2;
+          // إذا لم يكن اسم user2 موجود والمستخدم هو user2 نطلب أولا
+
+          if (currentUserType === 'user2' && !appState.user2.name) {
+            // هذا الفرع أعلاه سيعمل، نمنع الاستكمال.
+          } else {
+            // عرض الأسئلة مع الإجابات الحالية
+            let answers = user.answers.length ? user.answers : new Array(appState.questions.length).fill('');
+            let questionsHtml = '';
+            appState.questions.forEach((q, index) => {
+              questionsHtml += `
+                <div class="question-item">
+                  <div class="question-text">${index+1}. ${q}</div>
+                  <textarea rows="2" placeholder="اكتب إجابتك..." id="answer_${index}">${answers[index] || ''}</textarea>
+                </div>
+              `;
+            });
+
+            contentDiv.innerHTML = `
+              <div class="card-panel">
+                <h2><i class="fas fa-feather"></i> أجب بصدق ${user.name}</h2>
+                <form id="answersForm">
+                  ${questionsHtml}
+                  <div style="display: flex; gap: 15px; margin-top: 30px;">
+                    <button type="submit" id="saveAnswersBtn"><i class="fas fa-save"></i> أحفظ إجاباتي</button>
+                    <button type="button" class="secondary" id="cancelAnswersBtn"><i class="fas fa-times"></i> لاحقاً</button>
+                  </div>
+                </form>
+              </div>
+            `;
+
+            document.getElementById('answersForm')?.addEventListener('submit', (e) => {
+              e.preventDefault();
+              let newAnswers = [];
+              for (let i = 0; i < appState.questions.length; i++) {
+                let answer = document.getElementById(`answer_${i}`)?.value.trim() || '';
+                if (!answer) { alert('الرجاء الإجابة على جميع الأسئلة'); return; }
+                newAnswers.push(answer);
+              }
+              // حفظ الإجابات
+              if (currentUserType === 'user1') {
+                appState.user1.answers = newAnswers;
+              } else {
+                appState.user2.answers = newAnswers;
+              }
+              // إزالة نوع الجلسة بعد الإجابة
+              sessionStorage.removeItem('currentUserType');
+              if (checkBothCompleted()) {
+                appState.stage = 'results';
+              } else {
+                appState.stage = 'waiting';
+              }
+              render();
+            });
+
+            document.getElementById('cancelAnswersBtn')?.addEventListener('click', () => {
+              // رجوع للمرحله السابقه حسب السياق
+              if (currentUserType === 'user1') appState.stage = 'linkReady';
+              else appState.stage = 'waiting';
+              render();
+            });
+          }
+        }
+        // النتائج
+        else if (stage === 'results') {
+          let matchPercent = calculateMatchPercentage(appState.user1.answers, appState.user2.answers);
+          let identicalCount = 0;
+          for (let i=0; i<appState.questions.length; i++) {
+            if ((appState.user1.answers[i] || '').toLowerCase().trim() === (appState.user2.answers[i] || '').toLowerCase().trim()) identicalCount++;
+          }
+
+          // توليد عرض الإجابات المتطابقة والمختلفة (نموذج)
+          let identicalHtml = '', diffHtml = '';
+          appState.questions.forEach((q, idx) => {
+            let ans1 = appState.user1.answers[idx] || '';
+            let ans2 = appState.user2.answers[idx] || '';
+            if (ans1.toLowerCase().trim() === ans2.toLowerCase().trim()) {
+              identicalHtml += `<div class="match-item"><i class="fas fa-check-circle" style="color:#6f9; font-size:1.6rem;"></i> <div><strong>${q}</strong><br>“${ans1}”</div></div>`;
+            } else {
+              diffHtml += `<div class="match-item" style="border-color:#bc8f9f;"><i class="fas fa-heart-broken" style="color:#faa; font-size:1.6rem;"></i> <div><strong>${q}</strong><br>👤 ${appState.user1.name}: ${ans1}<br>👤 ${appState.user2.name}: ${ans2}</div></div>`;
+            }
+          });
+
+          contentDiv.innerHTML = `
+            <div class="card-panel">
+              <div style="text-align: center;">
+                <i class="fas fa-lock-open" style="font-size: 4rem; color: #ffb6d1;"></i>
+                <h2 style="color: #ffd7e4;">تم فتح القلوب 💗</h2>
+                <div class="percentage">${matchPercent}%</div>
+                <p>نسبة التوافق العاطفي</p>
+              </div>
+              <hr>
+              <h3><i class="fas fa-heart" style="color:#ff88aa;"></i> متطابقات (${identicalCount})</h3>
+              ${identicalHtml || '<p>لا توجد إجابات متطابقة تماماً، لكن الاختلافات تزيد العلاقة جمالاً.</p>'}
+              <hr>
+              <h3><i class="fas fa-sparkles"></i> اختلافات جميلة</h3>
+              ${diffHtml || '<p> مذهل! جميع إجاباتكما متطابقة 💖</p>'}
+              <div style="display:flex; gap:12px; margin-top:30px;">
+                <button id="resetAppBtn"><i class="fas fa-redo-alt"></i> ابدأ رحلة جديدة</button>
+                <button class="secondary" id="rematchBtn"><i class="fas fa-undo-alt"></i> إعادة المحاولة</button>
+              </div>
+            </div>
+          `;
+
+          document.getElementById('resetAppBtn')?.addEventListener('click', () => {
+            sessionStorage.clear();
+            appState = {
+              stage: 'welcome',
+              user1: { name: '', password: '', answers: [] },
+              user2: { name: '', answers: [] },
+              roomId: null,
+              link: '',
+              bothCompleted: false,
+              questions: appState.questions
+            };
+            render();
+          });
+          document.getElementById('rematchBtn')?.addEventListener('click', () => {
+            // إعادة تعيين الإجابات مع بقاء الأسماء
+            appState.user1.answers = [];
+            appState.user2.answers = [];
+            appState.bothCompleted = false;
+            appState.stage = 'waiting';
+            render();
+          });
+        }
+      }
+
+      // التعامل مع بارامترات الرابط (إذا دخل أحد عبر ?room=...)
+      function handleUrlRoom() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const room = urlParams.get('room');
+        if (room && appState.stage === 'welcome') {
+          // محاولة دخول كشخص ثاني
+          if (!appState.roomId) appState.roomId = room;
+          // لو الشخص الأول ما سجل بعد، لكن نبسط: نعتبر الرابط يوجه لتسجيل الثاني.
+          if (!appState.user1.name) {
+            appState.user1.name = 'حبيبك'; // افتراضي
+          }
+          appState.stage = 'questions';
+          sessionStorage.setItem('currentUserType', 'user2');
+          render();
+        }
+      }
+
+      // التشغيل الأولي
+      window.addEventListener('load', () => {
+        // اختبار بسيط: إذا أردنا استخدام session
+        // استرجاع أي حالة مخزنة؟ (اختياري للتجربة)
+        handleUrlRoom();
+        render();
+      });
+
+      // إعادة التصدير عند تغيير الرابط يدوياً (يمكن)
+      window.addEventListener('popstate', () => {
+        handleUrlRoom();
+        render();
+      });
+    })();
+  </script>
+</body>
+</html>
