@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة الإدارة — هارت سينك</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <style>
+        .toggle-switch {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+        }
+
+        .toggle-switch input[type="checkbox"] {
+            width: 36px;
+            height: 20px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="bg-orbs">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+    </div>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="dashboard.html" class="nav-brand">
+                <span class="heart-icon">💑</span> هارت سينك
+                <span class="badge badge-admin" style="font-size:0.7rem;margin-right:8px">إدارة</span>
+            </a>
+            <div class="nav-actions">
+                <span class="nav-name"></span>
+                <button id="logout-btn" class="btn btn-outline btn-sm">خروج</button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container" style="padding:40px 24px 80px;position:relative;z-index:1">
+
+        <div id="loading-state" class="loading-state">
+            <div class="spinner"></div>
+            <p>جاري التحميل...</p>
+        </div>
+
+        <div id="admin-content" class="hidden">
+            <h1 class="fw-black mb-8" style="font-size:1.8rem">لوحة الإدارة <span class="gradient-text">💜</span></h1>
+            <p class="text-muted mb-32">إدارة الأسئلة، المستخدمين، الغرف والإحصائيات</p>
+
+            <!-- Stats Overview -->
+            <div class="stats-grid mb-32" id="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value gradient-text" id="stat-users">—</div>
+                    <div class="stat-label">إجمالي المستخدمين</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value gradient-text" id="stat-rooms">—</div>
+                    <div class="stat-label">إجمالي الغرف</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value gradient-text" id="stat-completed">—</div>
+                    <div class="stat-label">غرف مكتملة</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value gradient-text" id="stat-avg-score">—</div>
+                    <div class="stat-label">متوسط التوافق</div>
+                </div>
+            </div>
+
+            <!-- Tabs -->
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="questions">❓ الأسئلة</button>
+                <button class="tab-btn" data-tab="users">👥 المستخدمون</button>
+                <button class="tab-btn" data-tab="rooms">🏠 الغرف</button>
+                <button class="tab-btn" data-tab="stats">📊 الإحصائيات</button>
+            </div>
+
+            <!-- QUESTIONS TAB -->
+            <div id="tab-questions" class="tab-panel active">
+                <div class="flex justify-between items-center mb-20">
+                    <h2 class="fw-bold">إدارة الأسئلة</h2>
+                    <button id="add-question-btn" class="btn btn-primary btn-sm">+ إضافة سؤال</button>
+                </div>
+                <div id="questions-table" class="card" style="padding:0;overflow:hidden"></div>
+            </div>
+
+            <!-- USERS TAB -->
+            <div id="tab-users" class="tab-panel">
+                <div class="flex justify-between items-center mb-20">
+                    <h2 class="fw-bold">المستخدمون المسجلون</h2>
+                    <button id="refresh-users-btn" class="btn btn-outline btn-sm">تحديث</button>
+                </div>
+                <div id="users-table" class="card" style="padding:0;overflow:hidden"></div>
+            </div>
+
+            <!-- ROOMS TAB -->
+            <div id="tab-rooms" class="tab-panel">
+                <div class="flex justify-between items-center mb-20">
+                    <h2 class="fw-bold">جميع الغرف</h2>
+                    <button id="refresh-rooms-btn" class="btn btn-outline btn-sm">تحديث</button>
+                </div>
+                <div id="rooms-table" class="card" style="padding:0;overflow:hidden"></div>
+            </div>
+
+            <!-- STATS TAB -->
+            <div id="tab-stats" class="tab-panel">
+                <h2 class="fw-bold mb-24">إحصائيات المنصة</h2>
+                <div class="grid-2">
+                    <div class="card">
+                        <div style="font-size:2rem;margin-bottom:8px">💜</div>
+                        <h3 class="fw-bold mb-4 text-sm text-muted">السؤال الأكثر تطابقاً</h3>
+                        <p id="most-matched" class="fw-bold mt-8">—</p>
+                    </div>
+                    <div class="card">
+                        <div style="font-size:2rem;margin-bottom:8px">💔</div>
+                        <h3 class="fw-bold mb-4 text-sm text-muted">السؤال الأكثر اختلافاً</h3>
+                        <p id="most-mismatched" class="fw-bold mt-8">—</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Question Modal -->
+    <div id="question-modal" class="modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modal-title">إضافة سؤال</h3>
+                <button class="modal-close" id="close-modal">✕</button>
+            </div>
+            <form id="question-form">
+                <input type="hidden" id="q-id">
+                <div class="form-group">
+                    <label class="form-label">نص السؤال *</label>
+                    <textarea id="q-text" class="form-control" rows="3" required
+                        placeholder="أدخل نص السؤال بالعربية"></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">نوع السؤال *</label>
+                    <select id="q-type" class="form-control">
+                        <option value="text">نصي</option>
+                        <option value="multiple_choice">متعدد الخيارات</option>
+                        <option value="scale">مقياس (1-5)</option>
+                    </select>
+                </div>
+                <div class="form-group" id="options-group" style="display:none">
+                    <label class="form-label">الخيارات (كل خيار في سطر منفصل) *</label>
+                    <textarea id="q-options" class="form-control" rows="4"
+                        placeholder="خيار أول&#10;خيار ثاني&#10;خيار ثالث"></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">الوزن (1-10)</label>
+                    <input type="number" id="q-weight" class="form-control" value="2" min="1" max="10">
+                </div>
+                <div class="form-group">
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="q-active" checked>
+                        <span>نشط (ظاهر للمستخدمين)</span>
+                    </label>
+                </div>
+                <div class="flex gap-12 mt-24">
+                    <button type="submit" class="btn btn-primary" style="flex:1" id="save-q-btn">حفظ</button>
+                    <button type="button" class="btn btn-outline" id="cancel-modal-btn">إلغاء</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script type="module">
+        import { requireAdmin, renderNavUser, signOut, showToast } from './js/auth.js';
+        import {
+            getAllQuestions, saveQuestion, deleteQuestion, toggleQuestion,
+            getAllUsers, setUserRole,
+            getAllRooms, deleteRoom,
+            getStats,
+            renderQuestionsTable, renderUsersTable, renderRoomsTable
+        } from './js/admin.js?v=2';
+
+        let currentAdmin = null;
+
+        async function init() {
+            currentAdmin = await requireAdmin();
+            if (!currentAdmin) return;
+            renderNavUser(currentAdmin);
+
+            document.getElementById('loading-state').classList.add('hidden');
+            document.getElementById('admin-content').classList.remove('hidden');
+
+            await Promise.all([loadStats(), loadQuestions()]);
+        }
+
+        // ── Stats ─────────────────────────────────────────────────
+        async function loadStats() {
+            try {
+                const s = await getStats();
+                document.getElementById('stat-users').textContent = s.totalUsers || 0;
+                document.getElementById('stat-rooms').textContent = s.totalRooms || 0;
+                document.getElementById('stat-completed').textContent = s.completedRooms || 0;
+                document.getElementById('stat-avg-score').textContent = s.avgScore !== '—' ? s.avgScore + '٪' : '—';
+                document.getElementById('most-matched').textContent = s.mostMatched;
+                document.getElementById('most-mismatched').textContent = s.mostMismatched;
+            } catch (err) { console.warn('Stats error:', err); }
+        }
+
+        // ── Questions ─────────────────────────────────────────────
+        async function loadQuestions() {
+            const container = document.getElementById('questions-table');
+            container.innerHTML = '<div class="loading-state"><div class="spinner"></div></div>';
+            try {
+                const questions = await getAllQuestions();
+                renderQuestionsTable(
+                    questions, container,
+                    (q) => openModal(q),
+                    async (id) => { if (confirm('هل أنت متأكد من الحذف؟')) { await deleteQuestion(id); showToast('تم الحذف', 'success'); loadQuestions(); } },
+                    async (id, active) => { await toggleQuestion(id, active); showToast(active ? 'تم التفعيل' : 'تم الإيقاف', 'success'); }
+                );
+            } catch (err) { container.innerHTML = `<p class="text-muted text-center" style="padding:20px">${err.message}</p>`; }
+        }
+
+        // ── Users ─────────────────────────────────────────────────
+        async function loadUsers() {
+            const container = document.getElementById('users-table');
+            container.innerHTML = '<div class="loading-state"><div class="spinner"></div></div>';
+            try {
+                const users = await getAllUsers();
+                renderUsersTable(users, container, async (id, role) => {
+                    if (confirm(`تغيير الدور إلى "${role === 'admin' ? 'مدير' : 'مستخدم'}"؟`)) {
+                        await setUserRole(id, role);
+                        showToast('تم تحديث الدور', 'success');
+                        loadUsers();
+                    }
+                });
+            } catch (err) { container.innerHTML = `<p class="text-muted text-center" style="padding:20px">${err.message}</p>`; }
+        }
+
+        // ── Rooms ─────────────────────────────────────────────────
+        async function loadRooms() {
+            const container = document.getElementById('rooms-table');
+            container.innerHTML = '<div class="loading-state"><div class="spinner"></div></div>';
+            try {
+                const rooms = await getAllRooms();
+                renderRoomsTable(rooms, container,
+                    async (id) => {
+                        if (confirm('حذف الغرفة نهائياً؟')) {
+                            await deleteRoom(id);
+                            showToast('تم حذف الغرفة', 'success');
+                            loadRooms();
+                            loadStats(); // Update stats after deletion
+                        }
+                    },
+                    async (ids) => {
+                        if (confirm(`حذف ${ids.length} غرف نهائياً؟`)) {
+                            const { deleteRooms } = await import('./js/admin.js');
+                            await deleteRooms(ids);
+                            showToast('تم حذف الغرف المحددة', 'success');
+                            loadRooms();
+                            loadStats(); // Update stats after deletion
+                        }
+                    }
+                );
+            } catch (err) { container.innerHTML = `<p class="text-muted text-center" style="padding:20px">${err.message}</p>`; }
+        }
+
+        // ── Tabs ──────────────────────────────────────────────────
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+                btn.classList.add('active');
+                const panelId = 'tab-' + btn.dataset.tab;
+                document.getElementById(panelId).classList.add('active');
+                // Lazy load on tab click
+                if (btn.dataset.tab === 'users') loadUsers();
+                if (btn.dataset.tab === 'rooms') loadRooms();
+                if (btn.dataset.tab === 'stats') loadStats();
+            });
+        });
+
+        // ── Modal ─────────────────────────────────────────────────
+        function openModal(q = null) {
+            const modal = document.getElementById('question-modal');
+            document.getElementById('modal-title').textContent = q ? 'تعديل السؤال' : 'إضافة سؤال جديد';
+            document.getElementById('q-id').value = q?.id || '';
+            document.getElementById('q-text').value = q?.text || '';
+            document.getElementById('q-type').value = q?.type || 'text';
+            document.getElementById('q-weight').value = q?.weight || 2;
+            document.getElementById('q-active').checked = q?.active !== false;
+
+            if (q?.options) {
+                const opts = typeof q.options === 'string' ? JSON.parse(q.options) : q.options;
+                document.getElementById('q-options').value = Array.isArray(opts) ? opts.join('\n') : '';
+            } else {
+                document.getElementById('q-options').value = '';
+            }
+            toggleOptionsField(document.getElementById('q-type').value);
+            modal.classList.add('open');
+        }
+
+        function closeModal() { document.getElementById('question-modal').classList.remove('open'); }
+
+        function toggleOptionsField(type) {
+            document.getElementById('options-group').style.display = type === 'multiple_choice' ? 'block' : 'none';
+        }
+
+        document.getElementById('q-type').addEventListener('change', e => toggleOptionsField(e.target.value));
+        document.getElementById('close-modal').addEventListener('click', closeModal);
+        document.getElementById('cancel-modal-btn').addEventListener('click', closeModal);
+        document.getElementById('question-modal').addEventListener('click', (e) => {
+            if (e.target === e.currentTarget) closeModal();
+        });
+        document.getElementById('add-question-btn').addEventListener('click', () => openModal());
+
+        document.getElementById('question-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('save-q-btn');
+            btn.disabled = true;
+            btn.textContent = 'جاري الحفظ...';
+            try {
+                await saveQuestion({
+                    id: document.getElementById('q-id').value || null,
+                    text: document.getElementById('q-text').value.trim(),
+                    type: document.getElementById('q-type').value,
+                    options: document.getElementById('q-options').value,
+                    weight: document.getElementById('q-weight').value,
+                    active: document.getElementById('q-active').checked,
+                });
+                showToast('تم الحفظ بنجاح ✓', 'success');
+                closeModal();
+                loadQuestions();
+            } catch (err) {
+                showToast('خطأ: ' + err.message, 'error');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'حفظ';
+            }
+        });
+
+        document.getElementById('refresh-users-btn').addEventListener('click', loadUsers);
+        document.getElementById('refresh-rooms-btn').addEventListener('click', loadRooms);
+        document.getElementById('logout-btn').addEventListener('click', signOut);
+
+        init();
+    </script>
+</body>
+
+</html>
