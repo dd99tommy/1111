@@ -204,7 +204,6 @@
                         action = `<a href="room.html?id=${room.id}" class="btn btn-sm btn-primary">إجابة الأسئلة</a>`;
                     }
 
-                    const inviteLink = getInviteLink(room.id);
                     const deleteBtn = isCreator ? `<button class="btn-delete-room" data-id="${room.id}" title="حذف الغرفة">🗑️</button>` : '';
 
                     card.innerHTML = `
