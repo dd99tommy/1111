@@ -87,10 +87,19 @@
 
             <!-- QUESTIONS TAB -->
             <div id="tab-questions" class="tab-panel active">
-                <div class="flex justify-between items-center mb-20">
-                    <h2 class="fw-bold">إدارة الأسئلة</h2>
-                    <button id="add-question-btn" class="btn btn-primary btn-sm">+ إضافة سؤال</button>
-                </div>
+<div class="flex justify-between items-center mb-20">
+    <h2 class="fw-bold">إدارة الأسئلة</h2>
+
+    <div class="flex gap-8">
+        <button id="bulk-add-btn" class="btn btn-outline btn-sm">
+            📥 استيراد أسئلة
+        </button>
+
+        <button id="add-question-btn" class="btn btn-primary btn-sm">
+            + إضافة سؤال
+        </button>
+    </div>
+</div>
                 <div id="questions-table" class="card" style="padding:0;overflow:hidden"></div>
             </div>
 
