@@ -319,3 +319,30 @@ export function renderRoomsTable(rooms, container, onDelete, onBulkDelete) {
     btn.addEventListener('click', () => onDelete(btn.dataset.id));
   });
 }
+
+
+
+const bulkModal = document.getElementById("bulk-modal");
+
+document
+.getElementById("bulk-add-btn")
+.addEventListener("click", () => {
+
+    bulkModal.classList.add("open");
+
+});
+
+
+function closeBulkModal(){
+
+    bulkModal.classList.remove("open");
+
+}
+
+document
+.getElementById("close-bulk-modal")
+.addEventListener("click", closeBulkModal);
+
+document
+.getElementById("cancel-bulk-btn")
+.addEventListener("click", closeBulkModal);
