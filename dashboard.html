@@ -204,18 +204,17 @@
                         action = `<a href="room.html?id=${room.id}" class="btn btn-sm btn-primary">إجابة الأسئلة</a>`;
                     }
 
+                    const inviteLink = getInviteLink(room.id);
                     const deleteBtn = isCreator ? `<button class="btn-delete-room" data-id="${room.id}" title="حذف الغرفة">🗑️</button>` : '';
 
                     card.innerHTML = `
             <div class="room-info">
               <div class="flex items-center gap-8 mb-4">
                 <span class="${statusBadgeClass(room.status)}">${statusLabel(room.status)}</span>
-                
-                
+                <span class="room-id">${room.id.substring(0, 8)}...</span>
                 ${deleteBtn}
               </div>
               <div class="room-date">${new Date(room.created_at).toLocaleDateString('ar-SA-u-ca-gregory-nu-latn')}</div>
-                                  const inviteLink = getInviteLink(room.id);
               ${room.compatibility_score != null ? `<div class="fw-bold mt-4" style="color:var(--primary-light)">التوافق: ${room.compatibility_score}٪</div>` : ''}
             </div>
             <div class="flex flex-column gap-8">
