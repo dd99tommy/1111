@@ -323,7 +323,19 @@ document.getElementById("import-questions-btn").addEventListener("click", async 
 
   showToast(`تم إضافة ${lines.length} سؤال`, "success");
 
-  loadQuestions();
+location.reload();
+});
 
+
+  document.getElementById("bulk-add-btn").addEventListener("click", () => {
+    document.getElementById("bulk-modal").classList.add("open");
+});
+
+document.getElementById("close-bulk-modal").addEventListener("click", () => {
+    document.getElementById("bulk-modal").classList.remove("open");
+});
+
+document.getElementById("cancel-bulk-btn").addEventListener("click", () => {
+    document.getElementById("bulk-modal").classList.remove("open");
 });
 
